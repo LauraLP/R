@@ -1,0 +1,208 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+R for Data Science 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+install.packages("tidyverse")
+library(tidyverse)
+```
+There is a data frame found in ggplot2 (aka ggplot2::mpg). A data frame is a rectangular collection of variables (in the columns) and observations (in the rows). mpg contains observations  collected  by  the  US  Environment  Protection  Agencyon 38 models of cars.
+```{r}
+ggplot(data = mpg) +  geom_point(mapping = aes(x = displ, y = hwy))
+```
+To make a graph, replace the bracketed sections in the fol‐ lowing code with a dataset, a geom function, or a collection of mappings:
+
+ggplot(data=<DATA>) + <GEOM_FUNCTION>(mapping=aes(<MAPPINGS>))
+
+We now get to play with different graphs we can make with the same data.
+```{r}
+#ggplot (data=mpg) 
+ggplot (data=mpg) + geom_point(mapping = aes(x = cyl, y = hwy))
+```
+
+```{r}
+ggplot (data=mpg) + geom_point(mapping = aes(x = class, y = drv)) #drv=front or rear wheel drive
+#help(mpg)
+```
+Back to the original plot. One group of points seems to fall outside the linear trend.  Are these cars hybrids?
+```{r}
+ggplot(data = mpg) +  geom_point(mapping = aes(x = displ, y = hwy))
+
+```
+
+```{r}
+ggplot(data = mpg) +  geom_point(mapping = aes(x = displ, y = hwy, colour = class))
+
+```
+
+```{r}
+ggplot(data = mpg) +  geom_point(mapping = aes(x = displ, y = hwy, size = class))#ill advised (discrete variables and size)
+
+```
+
+```{r}
+ggplot(data = mpg) +  geom_point(mapping = aes(x = displ, y = hwy, alpha = class))
+```
+
+```{r}
+ggplot(data = mpg) +  geom_point(mapping = aes(x = displ, y = hwy, shape = class))# ill advised (can only have 6 shapes)
+
+```
+
+You can also set the aesthetic properties of your geom manually. For example, we can make all of the points in our plot blue.To  set  an  aesthetic  manually,  set  the  aesthetic  by  name  as  an  argument  of  your  geom  func‐tion;  i.e.,  it  goes  outside  of  aes().
+Pick  a  value  thatmakes sense for that aesthetic:
+The name of a color as a character string.
+The size of a point in mm.
+The shape of a point as a number.
+
+```{r}
+ggplot(data = mpg) +  geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+```
+
+
+#Facets
+
+Another way,particularly useful for categorical variables, is to split your plot intofacets, subplots that each display one subset of the data.
+
+```{r}
+ggplot(data = mpg) +  geom_point(mapping = aes(x = displ, y = hwy)) +  facet_wrap(~ class, nrow = 2)
+```
+
+
+```{r}
+ggplot(data = mpg) +  geom_point(mapping = aes(x = displ, y = hwy)) +  facet_grid(drv ~ cyl)
+```
+
+```{r}
+ggplot(data = mpg) +  geom_point(mapping = aes(x = displ, y = hwy)) +  facet_grid(. ~ cyl)
+```
+
+
+```{r}
+ggplot(data = mpg) +  geom_smooth(mapping = aes(x = displ, y = hwy))
+```
+
+```{r}
+ggplot(data = mpg) +  geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv)) 
+
+```
+
+```{r}
+ggplot(data = mpg) +  geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv)) +geom_point(mapping=aes(x =displ, y= hwy, colour = drv))
+
+```
+
+
+```{r}
+ggplot(data = mpg) +  geom_smooth(    mapping = aes(x = displ, y = hwy, color = drv),    show.legend = FALSE  )
+```
+
+```{r}
+ggplot(data = mpg) +  geom_smooth(    mapping = aes(x = displ, y = hwy, color = drv),    show.legend = FALSE  )
+```
+
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +  geom_point() +  geom_smooth()
+```
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +  geom_point(mapping = aes(color = class)) +  geom_smooth()
+```
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +  geom_point(mapping = aes(color = class)) +  geom_smooth(    data = filter(mpg, class == "subcompact"),    se = FALSE  )
+```
+
+
+```{r}
+ggplot(  data = mpg,  mapping = aes(x = displ, y = hwy, color = drv)) +  geom_point() +  geom_smooth(se = FALSE)
+```
+
+#Statistical Transformations
+
+```{r}
+ggplot (data=diamonds) + geom_bar(mapping=aes(x=cut))
+```
+
+```{r}
+ggplot(data = diamonds) +  stat_count(mapping = aes(x = cut))
+```
+
+```{r}
+demo <- tribble(  ~a,      ~b,   "bar_1", 20,  "bar_2", 30,    "bar_3", 40)
+ggplot(data = demo) +  geom_bar(    mapping = aes(x = a, y = b), stat = "identity"  )
+```
+
+```{r}
+ggplot(data = diamonds) +  geom_bar(    mapping = aes(x = cut, y = ..prop.., group = 1)  )
+```
+
+```{r}
+ggplot(data = diamonds) +  stat_summary(    mapping = aes(x = cut, y = depth),    fun.ymin = min,    fun.ymax = max,    fun.y = median  )
+```
+
+```{r}
+ggplot(data = diamonds) +  geom_bar(mapping = aes(x = cut, y = ..prop..))
+
+ggplot(data = diamonds) +  geom_bar(    mapping = aes(x = cut, fill = color, y = ..prop..)  )
+```
+
+```{r}
+ggplot(data = diamonds) +  geom_bar(mapping = aes(x = cut, fill = clarity))
+```
+
+```{r}
+ggplot(  data = diamonds,  mapping = aes(x = cut, fill = clarity)) +  geom_bar(alpha = 1/5, position = "identity")
+
+```
+
+```{r}
+ggplot(  data = diamonds,  mapping = aes(x = cut, color = clarity)) +  geom_bar(fill = NA, position = "identity")
+```
+
+```{r}
+ggplot(data = diamonds) +  geom_bar(    mapping = aes(x = cut, fill = clarity),    position = "fill"  )
+```
+
+```{r}
+ggplot(data = diamonds) +  geom_bar(    mapping = aes(x = cut, fill = clarity),    position = "dodge"  )
+```
+
+```{r}
+ggplot(data = mpg) +  geom_point(    mapping = aes(x = displ, y = hwy),    position = "jitter"  )
+```
+```{r}
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +  geom_boxplot()
+```
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) +  geom_boxplot() +  coord_flip()
+```
+```{r}
+install.packages("maps")
+library(maps)
+nz <- map_data("nz")
+
+ggplot(nz, aes(long, lat, group = group)) +  geom_polygon(fill = "white", color = "black")
+
+```
+```{r}
+install.packages("nycflights13")
+library(nycflights13)
+library(tidyverse)
+```
+
+Take  careful  note  of  the  conflicts  message  that’s  printed  when  youload the tidyverse. It tells you that dplyr overwrites some functionsin base R. If you want to use the base version of these functions afterloading dplyr, you’ll need to use their full names: stats::filter()and stats::lag().
+
+```{r}
+flights
+```
+
+
+
+
